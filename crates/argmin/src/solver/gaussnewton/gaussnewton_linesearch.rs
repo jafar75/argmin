@@ -87,11 +87,11 @@ where
     G: Clone,
     U: ArgminL2Norm<F>,
     J: Clone
-        + ArgminTranspose<J>
-        + ArgminInv<J>
-        + ArgminDot<J, J>
-        + ArgminDot<G, P>
-        + ArgminDot<U, G>,
+    + ArgminTranspose<J>
+    + ArgminInv<J>
+    + ArgminDot<J, J>
+    + ArgminDot<G, P>
+    + ArgminDot<U, G>,
     L: Clone + LineSearch<P, F> + Solver<LineSearchProblem<O, F>, IterState<P, G, (), (), R, F>>,
     F: ArgminFloat,
     R: Clone,
@@ -133,9 +133,9 @@ where
             ))?),
             self.linesearch.clone(),
         )
-        .configure(|config| config.param(param).gradient(grad).cost(residuals.l2_norm()))
-        .ctrlc(false)
-        .run()?;
+            .configure(|config| config.param(param).gradient(grad).cost(residuals.l2_norm()))
+            .ctrlc(false)
+            .run()?;
 
         // Here we cannot use `consume_problem` because the problem we need is hidden inside a
         // `LineSearchProblem` hidden inside a `Problem`. Therefore we have to split this in two
@@ -201,7 +201,7 @@ where
     type Param = P;
     type Output = F;
 
-    fn cost(&self, p: &Self::Param) -> Result<Self::Output, Error> {
+    fn cost(&mut self, p: &Self::Param) -> Result<Self::Output, Error> {
         Ok(self.problem.apply(p)?.l2_norm())
     }
 }

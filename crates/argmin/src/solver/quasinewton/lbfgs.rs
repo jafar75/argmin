@@ -223,13 +223,13 @@ where
     fn with_l1_constraint(&mut self, l1_coeff: F, param: &P, pseudo_gradient: &G)
     where
         P: ArgminZeroLike
-            + ArgminMinMax
-            + ArgminSignum
-            + ArgminAdd<P, P>
-            + ArgminAdd<F, P>
-            + ArgminMul<P, P>
-            + ArgminSub<F, P>
-            + ArgminMul<G, P>,
+        + ArgminMinMax
+        + ArgminSignum
+        + ArgminAdd<P, P>
+        + ArgminAdd<F, P>
+        + ArgminMul<P, P>
+        + ArgminSub<F, P>
+        + ArgminMul<G, P>,
     {
         let zeros = param.zero_like();
         let sig_param = P::max(&param.sub(&F::min_positive_value()).signum(), &zeros).add(&P::min(
@@ -257,7 +257,7 @@ where
     type Param = P;
     type Output = F;
 
-    fn cost(&self, param: &Self::Param) -> Result<Self::Output, Error> {
+    fn cost(&mut self, param: &Self::Param) -> Result<Self::Output, Error> {
         if let Some(xi) = self.xi.as_ref() {
             let zeros = param.zero_like();
             let param = P::max(&param.mul(xi).signum(), &zeros).mul(param);
@@ -273,12 +273,12 @@ impl<O, P, G, F> Gradient for LineSearchProblem<O, P, G, F>
 where
     O: Gradient<Param = P, Gradient = G>,
     P: ArgminAdd<F, P>
-        + ArgminMul<P, P>
-        + ArgminMul<F, P>
-        + ArgminSub<F, P>
-        + ArgminMinMax
-        + ArgminSignum
-        + ArgminZeroLike,
+    + ArgminMul<P, P>
+    + ArgminMul<F, P>
+    + ArgminSub<F, P>
+    + ArgminMinMax
+    + ArgminSignum
+    + ArgminZeroLike,
     G: ArgminAdd<P, G> + ArgminZeroLike + ArgminMinMax + ArgminAdd<G, G>,
     F: ArgminFloat,
 {
@@ -305,32 +305,32 @@ impl<O, L, P, G, F> Solver<O, IterState<P, G, (), (), (), F>> for LBFGS<L, P, G,
 where
     O: CostFunction<Param = P, Output = F> + Gradient<Param = P, Gradient = G>,
     P: Clone
-        + ArgminSub<P, P>
-        + ArgminSub<F, P>
-        + ArgminAdd<P, P>
-        + ArgminAdd<F, P>
-        + ArgminDot<G, F>
-        + ArgminMul<F, P>
-        + ArgminMul<P, P>
-        + ArgminMul<G, P>
-        + ArgminL1Norm<F>
-        + ArgminSignum
-        + ArgminZeroLike
-        + ArgminMinMax,
+    + ArgminSub<P, P>
+    + ArgminSub<F, P>
+    + ArgminAdd<P, P>
+    + ArgminAdd<F, P>
+    + ArgminDot<G, F>
+    + ArgminMul<F, P>
+    + ArgminMul<P, P>
+    + ArgminMul<G, P>
+    + ArgminL1Norm<F>
+    + ArgminSignum
+    + ArgminZeroLike
+    + ArgminMinMax,
     G: Clone
-        + ArgminL2Norm<F>
-        + ArgminSub<G, G>
-        + ArgminAdd<G, G>
-        + ArgminAdd<P, G>
-        + ArgminDot<G, F>
-        + ArgminDot<P, F>
-        + ArgminMul<F, G>
-        + ArgminMul<F, P>
-        + ArgminZeroLike
-        + ArgminMinMax,
+    + ArgminL2Norm<F>
+    + ArgminSub<G, G>
+    + ArgminAdd<G, G>
+    + ArgminAdd<P, G>
+    + ArgminDot<G, F>
+    + ArgminDot<P, F>
+    + ArgminMul<F, G>
+    + ArgminMul<F, P>
+    + ArgminZeroLike
+    + ArgminMinMax,
     L: Clone
-        + LineSearch<P, F>
-        + Solver<LineSearchProblem<O, P, G, F>, IterState<P, G, (), (), (), F>>,
+    + LineSearch<P, F>
+    + Solver<LineSearchProblem<O, P, G, F>, IterState<P, G, (), (), (), F>>,
     F: ArgminFloat,
 {
     fn name(&self) -> &str {
@@ -428,8 +428,8 @@ where
                 &r.mul(&prev_grad).sub(&F::min_positive_value()).signum(),
                 &zeros,
             )
-            .mul(&r)
-            .mul(&float!(-1.0))
+                .mul(&r)
+                .mul(&float!(-1.0))
         } else {
             r.mul(&float!(-1.0))
         };

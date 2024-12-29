@@ -73,7 +73,7 @@
   /></a>
 </p>
 
-
+This is a brief try to provide a cost function that takes a mutable reference of the problem.
 argmin is a numerical optimization library written entirely in Rust.
 
 argmins goal is to offer a wide range of optimization algorithms with a consistent interface.

@@ -89,7 +89,7 @@ impl CostFunction for TestProblem {
     /// # Ok(())
     /// # }
     /// ```
-    fn cost(&self, _p: &Self::Param) -> Result<Self::Output, Error> {
+    fn cost(&mut self, _p: &Self::Param) -> Result<Self::Output, Error> {
         Ok(1.0f64)
     }
 }
@@ -261,7 +261,7 @@ impl CostFunction for TestSparseProblem {
     /// # Ok(())
     /// # }
     /// ```
-    fn cost(&self, param: &Self::Param) -> Result<Self::Output, Error> {
+    fn cost(&mut self, param: &Self::Param) -> Result<Self::Output, Error> {
         let err1 = (param[0] + param[1] - 1.0).powi(2);
         let err2 = (param[2] + param[3] + 1.0).powi(2);
         let err3 = (param[0] - 1.0).powi(2);

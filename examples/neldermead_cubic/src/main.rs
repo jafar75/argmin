@@ -40,7 +40,7 @@ impl CostFunction for Cubic {
     type Param = f64;
     type Output = f64;
 
-    fn cost(&self, p: &Self::Param) -> Result<Self::Output, Error> {
+    fn cost(&mut self, p: &Self::Param) -> Result<Self::Output, Error> {
         // The cost function is the evaluation of the polynomial with our
         // parameter, squared. The parameter is a guess of `x`, and the
         // objective is to minimize `x` (i.e. find a polynomial root). The

@@ -124,14 +124,14 @@ impl<O> Problem<O> {
     /// that it is not possible to `impl` a type from another crate. Therefore if one implements a
     /// solver outside of argmin, `.problem(...)` has to be called directly as shown in the first
     /// example.
-    pub fn problem<T, F: FnOnce(&O) -> Result<T, Error>>(
+    pub fn problem<T, F: FnOnce(&mut O) -> Result<T, Error>>(
         &mut self,
         counts_string: &'static str,
         func: F,
     ) -> Result<T, Error> {
         let count = self.counts.entry(counts_string).or_insert(0);
         *count += 1;
-        func(self.problem.as_ref().unwrap())
+        func(self.problem.as_mut().unwrap())
     }
 
     /// Gives access to the stored `problem` via the closure `func` and keeps track of how many
@@ -140,7 +140,7 @@ impl<O> Problem<O> {
     /// This is used by the `bulk_*` methods, which process multiple parameters at once.
     /// The function counts will be passed to observers labeled with `counts_string`.
     /// Per convention, `counts_string` is chosen as `<something>_count`.
-    pub fn bulk_problem<T, F: FnOnce(&O) -> Result<T, Error>>(
+    pub fn bulk_problem<T, F: FnOnce(&mut O) -> Result<T, Error>>(
         &mut self,
         counts_string: &'static str,
         num_param_vecs: usize,
@@ -148,7 +148,7 @@ impl<O> Problem<O> {
     ) -> Result<T, Error> {
         let count = self.counts.entry(counts_string).or_insert(0);
         *count += num_param_vecs as u64;
-        func(self.problem.as_ref().unwrap())
+        func(self.problem.as_mut().unwrap())
     }
 
     /// Returns the internally stored problem and replaces it with `None`.
@@ -376,7 +376,7 @@ pub trait CostFunction {
     type Output;
 
     /// Compute cost function
-    fn cost(&self, param: &Self::Param) -> Result<Self::Output, Error>;
+    fn cost(&mut self, param: &Self::Param) -> Result<Self::Output, Error>;
 
     bulk!(cost, Self::Param, Self::Output);
 }
